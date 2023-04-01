@@ -87,7 +87,11 @@ public class OrderService {
 
         int assignedOrders = numberOfAssignedOrders();
 
-       return  orders != null ? orders.size() - assignedOrders : 0;
+        if (orders != null) {
+            return orders.size() - assignedOrders;
+        }
+
+       return 0;
     }
 
     public int getOrdersLeftAfterGivenTimeByPartnerId(String time, String partnerId) {

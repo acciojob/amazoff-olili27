@@ -68,6 +68,8 @@ public class OrderController {
     @GetMapping("/get-order-count-by-partner-id/{partnerId}")
     public ResponseEntity<Integer> getOrderCountByPartnerId(@PathVariable String partnerId){
         DeliveryPartner deliveryPartner = orderService.getDeliveryPartnerById(partnerId);
+        if(deliveryPartner == null) return null;
+
         Integer orderCount = deliveryPartner.getNumberOfOrders();
 
         return new ResponseEntity<>(orderCount, HttpStatus.OK);
