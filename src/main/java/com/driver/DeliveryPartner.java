@@ -14,7 +14,7 @@ public class DeliveryPartner {
         return id;
     }
 
-    public Integer getNumberOfOrders(){
+    public int getNumberOfOrders(){
         return numberOfOrders;
     }
 

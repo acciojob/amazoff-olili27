@@ -47,8 +47,20 @@ public class OrderService {
         return null;
     }
 
-    public List<String> getAllDeliveryPartnerOrders(String partnerId) {
-        return OrderDeliveryPartnerRepository.getAllDeliveryPartnerOrders(partnerId);
+    public List<Order> getAllDeliveryPartnerOrders(String partnerId) {
+        List<String> orderIds = OrderDeliveryPartnerRepository.getAllDeliveryPartnerOrders(partnerId);
+
+        List<Order> orders = new ArrayList<>();
+
+        if (orderIds != null) {
+            for (String id: orderIds) {
+                orders.add(OrderRepository.orderDb.get(id));
+            }
+
+            return orders;
+        }
+
+        return null;
     }
 
     public List<String> getAllOrders() {
@@ -103,7 +115,7 @@ public class OrderService {
             for (String orderId: orderIds) {
                 Order order = OrderRepository.orderDb.get(orderId);
 
-                if(order.getDeliveryTime() > Integer.parseInt(time)) {
+                if(order.getDeliveryTime() > ( Integer.parseInt(time.substring(0,2)) + Integer.parseInt(time.substring(3)))) {
                     countLeft++;
                 }
             }

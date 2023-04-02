@@ -16,7 +16,7 @@ public class OrderDeliveryPartnerRepository {
             List<String> ordersToHandle = orderDeliveryPairDb.getOrDefault(partnerId, new ArrayList<>());
 
             DeliveryPartner deliveryPartner = DeliveryPartnerRepository.deliveryPartnerDb.get(partnerId);
-            deliveryPartner.setNumberOfOrders(ordersToHandle.size());
+            deliveryPartner.setNumberOfOrders(ordersToHandle.size() + 1);
 
             ordersToHandle.add(orderId);
 
