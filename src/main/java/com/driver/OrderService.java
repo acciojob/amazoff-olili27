@@ -63,20 +63,20 @@ public class OrderService {
         return null;
     }
 
-    public List<String> getAllOrders() {
-        List<Order> orders = OrderRepository.getAllOrders();
+    public List<Order> getAllOrders() {
+        return OrderRepository.getAllOrders();
 
-        if (orders != null) {
-            List<String> orderIds = new ArrayList<>();
+//        if (orders != null) {
+//            List<Or> orderIds = new ArrayList<>();
+//
+//            for (Order order: orders) {
+//                orderIds.add(order.getId());
+//            }
+//
+//            return orderIds;
+//        }
 
-            for (Order order: orders) {
-                orderIds.add(order.getId());
-            }
-
-            return orderIds;
-        }
-
-        return null;
+//        return null;
     }
     public int numberOfAssignedOrders() {
         List<String> assignedPartnerIds = OrderDeliveryPartnerRepository.getAssignedDeliverPartnerIds();
