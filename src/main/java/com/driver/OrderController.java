@@ -85,8 +85,8 @@ public class OrderController {
     }
 
     @GetMapping("/get-all-orders")
-    public ResponseEntity<List<Order>> getAllOrders(){
-        List<Order> orders = orderService.getAllOrders();
+    public ResponseEntity<List<String>> getAllOrders(){
+        List<String> orders = orderService.getAllOrders();
 
         if (orders == null) return null;
 

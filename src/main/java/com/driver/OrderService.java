@@ -63,8 +63,19 @@ public class OrderService {
         return null;
     }
 
-    public List<Order> getAllOrders() {
-        return OrderRepository.getAllOrders();
+    public List<String> getAllOrders() {
+        List<Order> orders = OrderRepository.getAllOrders();
+        List<String> orderIds = new ArrayList<>();
+
+        if(orders != null){
+            for (Order order : orders) {
+                orderIds.add(order.getId());
+            }
+
+            return orderIds;
+        }
+
+        return null;
     }
 
     public int numberOfAssignedOrders() {
