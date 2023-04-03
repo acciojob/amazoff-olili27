@@ -47,20 +47,21 @@ public class OrderService {
         return null;
     }
 
-    public List<Order> getAllDeliveryPartnerOrders(String partnerId) {
-        List<String> orderIds = OrderDeliveryPartnerRepository.getAllDeliveryPartnerOrders(partnerId);
+    public List<String> getAllDeliveryPartnerOrders(String partnerId) {
+//        List<String> orderIds =
+                return OrderDeliveryPartnerRepository.getAllDeliveryPartnerOrders(partnerId);
 
-        List<Order> orders = new ArrayList<>();
-
-        if (orderIds != null) {
-            for (String id: orderIds) {
-                orders.add(OrderRepository.orderDb.get(id));
-            }
-
-            return orders;
-        }
-
-        return null;
+//        List<Order> orders = new ArrayList<>();
+//
+//        if (orderIds != null) {
+//            for (String id: orderIds) {
+//                orders.add(OrderRepository.orderDb.get(id));
+//            }
+//
+//            return orders;
+//        }
+//
+//        return null;
     }
 
     public List<String> getAllOrders() {
