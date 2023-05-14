@@ -8,21 +8,21 @@ import java.util.stream.Collectors;
 
 @Repository
 public class OrderRepository {
-    static HashMap<String, Order>  orderDb = new HashMap<>();
+    HashMap<String, Order>  orderDb = new HashMap<>();
 
-     public static void addOrder(Order order) {
+     public void addOrder(Order order) {
         String key = order.getId();
 
         orderDb.put(key, order);
     }
 
-     public static List<Order> getAllOrders() {
+     public List<Order> getAllOrders() {
         if (orderDb.isEmpty()) return null;
 
         return orderDb.values().stream().collect(Collectors.toList());
     }
 
-     public static void deleteOrderById(String orderId) {
+     public void deleteOrderById(String orderId) {
         if (orderDb.isEmpty() || !orderDb.containsKey(orderId)) {
             return;
         }

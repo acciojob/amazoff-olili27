@@ -1,5 +1,6 @@
 package com.driver;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -8,19 +9,26 @@ import java.util.List;
 
 @Service
 public class OrderService {
+
+    @Autowired
+    OrderRepository orderRepository;
+
+    @Autowired
+    OrderDeliveryPartnerRepository orderDeliveryPartnerRepository;
+
     public void addOrder(Order order) {
-        OrderRepository.addOrder(order);
+        orderRepository.addOrder(order);
     }
     public void addPartner(String partnerId) {
         DeliveryPartnerRepository.addPartner(partnerId);
     }
 
     public String addPair(String orderId, String partnerId) {
-        return OrderDeliveryPartnerRepository.addPair(orderId, partnerId);
+        return orderDeliveryPartnerRepository.addPair(orderId, partnerId);
     }
 
     public Order getOrderById(String orderId) {
-        List<Order> orders = OrderRepository.getAllOrders();
+        List<Order> orders = orderRepository.getAllOrders();
 
         if (orders != null) {
             for (Order order : orders) {
@@ -49,7 +57,7 @@ public class OrderService {
 
     public List<String> getAllDeliveryPartnerOrders(String partnerId) {
 //        List<String> orderIds =
-                return OrderDeliveryPartnerRepository.getAllDeliveryPartnerOrders(partnerId);
+                return orderDeliveryPartnerRepository.getAllDeliveryPartnerOrders(partnerId);
 
 //        List<Order> orders = new ArrayList<>();
 //
@@ -65,7 +73,7 @@ public class OrderService {
     }
 
     public List<String> getAllOrders() {
-        List<Order> orders = OrderRepository.getAllOrders();
+        List<Order> orders = orderRepository.getAllOrders();
         List<String> orderIds = new ArrayList<>();
 
         if(orders != null){
@@ -80,7 +88,7 @@ public class OrderService {
     }
 
     public int numberOfAssignedOrders() {
-        List<String> assignedPartnerIds = OrderDeliveryPartnerRepository.getAssignedDeliverPartnerIds();
+        List<String> assignedPartnerIds = orderDeliveryPartnerRepository.getAssignedDeliverPartnerIds();
 
         int countAssignedOrders = 0;
 
@@ -96,7 +104,7 @@ public class OrderService {
     }
 
     public int numberOfUnAssignedOrders() {
-        List<Order> orders = OrderRepository.getAllOrders();
+        List<Order> orders = orderRepository.getAllOrders();
 
         int assignedOrders = numberOfAssignedOrders();
 
@@ -108,13 +116,13 @@ public class OrderService {
     }
 
     public int getOrdersLeftAfterGivenTimeByPartnerId(String time, String partnerId) {
-        List<String> orderIds = OrderDeliveryPartnerRepository.getAllDeliveryPartnerOrders(partnerId);
+        List<String> orderIds = orderDeliveryPartnerRepository.getAllDeliveryPartnerOrders(partnerId);
 
         int countLeft = 0;
 
         if (orderIds != null) {
             for (String orderId: orderIds) {
-                Order order = OrderRepository.orderDb.get(orderId);
+                Order order = orderRepository.orderDb.get(orderId);
 
                 if(order.getDeliveryTime() > ( Integer.parseInt(time.substring(0,2)) + Integer.parseInt(time.substring(3)))) {
                     countLeft++;
@@ -126,13 +134,13 @@ public class OrderService {
     }
 
     public String getLastDeliveryTimeByPartnerId(String partnerId) {
-        List<String> orderIds = OrderDeliveryPartnerRepository.getAllDeliveryPartnerOrders(partnerId);
+        List<String> orderIds = orderDeliveryPartnerRepository.getAllDeliveryPartnerOrders(partnerId);
 
         List<Integer> deliveryTimes = new ArrayList<>();
 
         if (orderIds != null) {
             for (String orderId: orderIds) {
-                Order order = OrderRepository.orderDb.get(orderId);
+                Order order = orderRepository.orderDb.get(orderId);
                 deliveryTimes.add(order.getDeliveryTime());
             }
 
@@ -153,15 +161,15 @@ public class OrderService {
 
     public void deletePartnerById(String partnerId) {
         DeliveryPartnerRepository.deletePartnerById(partnerId);
-        OrderDeliveryPartnerRepository.deletePartnerById(partnerId);
+        orderDeliveryPartnerRepository.deletePartnerById(partnerId);
     }
 
     public String deleteOrderById(String orderId) {
-        List<String> assignedDeliveryPartners = OrderDeliveryPartnerRepository.getAssignedDeliverPartnerIds();
+        List<String> assignedDeliveryPartners = orderDeliveryPartnerRepository.getAssignedDeliverPartnerIds();
 
         if (assignedDeliveryPartners != null) {
             for (String id : assignedDeliveryPartners) {
-                List<String> orderIds = OrderDeliveryPartnerRepository.orderDeliveryPairDb.get(id);
+                List<String> orderIds = orderDeliveryPartnerRepository.orderDeliveryPairDb.get(id);
 
                 if (orderIds != null) {
                     orderIds.remove(orderId);
