@@ -10,23 +10,26 @@ import java.util.stream.Collectors;
 public class DeliveryPartnerRepository {
     static HashMap<String, DeliveryPartner> deliveryPartnerDb = new HashMap<>();
 
-    static public void addPartner(String partnerId) {
-        DeliveryPartner deliveryPartner = new DeliveryPartner(partnerId);
+     public static void addPartner(String partnerId) {
+        DeliveryPartner deliveryPartner = new DeliveryPartner();
+        deliveryPartner.setId(partnerId);
 
         deliveryPartnerDb.put(partnerId, deliveryPartner);
     }
 
-    static public List<DeliveryPartner> getAllDeliveryPartners() {
+     public static List<DeliveryPartner> getAllDeliveryPartners() {
         if (deliveryPartnerDb.isEmpty()) return null;
 
         return deliveryPartnerDb.values().stream().collect(Collectors.toList());
     }
 
-    static public void deletePartnerById(String partnerId) {
+     public static void deletePartnerById(String partnerId) {
         if (deliveryPartnerDb.isEmpty() || !deliveryPartnerDb.containsKey(partnerId)) {
             return;
         }
 
         deliveryPartnerDb.remove(partnerId);
     }
+
+
 }

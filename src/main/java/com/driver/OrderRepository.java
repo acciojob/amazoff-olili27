@@ -10,19 +10,19 @@ import java.util.stream.Collectors;
 public class OrderRepository {
     static HashMap<String, Order>  orderDb = new HashMap<>();
 
-    static public void addOrder(Order order) {
+     public static void addOrder(Order order) {
         String key = order.getId();
 
         orderDb.put(key, order);
     }
 
-    static public List<Order> getAllOrders() {
+     public static List<Order> getAllOrders() {
         if (orderDb.isEmpty()) return null;
 
         return orderDb.values().stream().collect(Collectors.toList());
     }
 
-    static public void deleteOrderById(String orderId) {
+     public static void deleteOrderById(String orderId) {
         if (orderDb.isEmpty() || !orderDb.containsKey(orderId)) {
             return;
         }
