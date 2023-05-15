@@ -12,11 +12,11 @@ public class OrderService {
 
     public OrderService() {}
 
-    @Autowired
-    OrderRepository orderRepository;
+//    @Autowired
+    OrderRepository orderRepository = new OrderRepository();
 
-    @Autowired
-    OrderDeliveryPartnerRepository orderDeliveryPartnerRepository;
+//    @Autowired
+    OrderDeliveryPartnerRepository orderDeliveryPartnerRepository = new OrderDeliveryPartnerRepository();
 
     public void addOrder(Order order) {
         orderRepository.addOrder(order);

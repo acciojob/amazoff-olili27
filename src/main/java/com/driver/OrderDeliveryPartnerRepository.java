@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 @Repository
 public class OrderDeliveryPartnerRepository {
 
-    @Autowired
-    OrderRepository orderRepository;
+//    @Autowired
+    OrderRepository orderRepository = new OrderRepository();
 
     HashMap<String, List<String>> orderDeliveryPairDb = new HashMap<>();
 
