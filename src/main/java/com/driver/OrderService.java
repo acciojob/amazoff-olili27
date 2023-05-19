@@ -10,19 +10,20 @@ import java.util.List;
 @Service
 public class OrderService {
 
-    public OrderService() {}
+    @Autowired
+    OrderRepository orderRepository;
 
-//    @Autowired
-    OrderRepository orderRepository = new OrderRepository();
+    @Autowired
+    OrderDeliveryPartnerRepository orderDeliveryPartnerRepository;
 
-//    @Autowired
-    OrderDeliveryPartnerRepository orderDeliveryPartnerRepository = new OrderDeliveryPartnerRepository();
+    @Autowired
+    DeliveryPartnerRepository deliveryPartnerRepository;
 
     public void addOrder(Order order) {
         orderRepository.addOrder(order);
     }
     public void addPartner(String partnerId) {
-        DeliveryPartnerRepository.addPartner(partnerId);
+        deliveryPartnerRepository.addPartner(partnerId);
     }
 
     public String addPair(String orderId, String partnerId) {
@@ -44,7 +45,7 @@ public class OrderService {
     }
 
     public DeliveryPartner getDeliveryPartnerById(String partnerId) {
-        List<DeliveryPartner> deliverPartners = DeliveryPartnerRepository.getAllDeliveryPartners();
+        List<DeliveryPartner> deliverPartners = deliveryPartnerRepository.getAllDeliveryPartners();
 
         if (deliverPartners != null) {
             for (DeliveryPartner deliveryPartner : deliverPartners) {
@@ -58,20 +59,7 @@ public class OrderService {
     }
 
     public List<String> getAllDeliveryPartnerOrders(String partnerId) {
-//        List<String> orderIds =
-                return orderDeliveryPartnerRepository.getAllDeliveryPartnerOrders(partnerId);
-
-//        List<Order> orders = new ArrayList<>();
-//
-//        if (orderIds != null) {
-//            for (String id: orderIds) {
-//                orders.add(OrderRepository.orderDb.get(id));
-//            }
-//
-//            return orders;
-//        }
-//
-//        return null;
+        return orderDeliveryPartnerRepository.getAllDeliveryPartnerOrders(partnerId);
     }
 
     public List<String> getAllOrders() {
@@ -96,7 +84,7 @@ public class OrderService {
 
         if(assignedPartnerIds != null) {
             for (String partnersId: assignedPartnerIds) {
-                DeliveryPartner deliveryPartner = DeliveryPartnerRepository.deliveryPartnerDb.get(partnersId);
+                DeliveryPartner deliveryPartner = deliveryPartnerRepository.deliveryPartnerDb.get(partnersId);
 
                 countAssignedOrders += deliveryPartner.getNumberOfOrders();
             }
@@ -106,15 +94,7 @@ public class OrderService {
     }
 
     public int numberOfUnAssignedOrders() {
-        List<Order> orders = orderRepository.getAllOrders();
-
-        int assignedOrders = numberOfAssignedOrders();
-
-        if (orders != null) {
-            return orders.size() - assignedOrders;
-        }
-
-       return 0;
+       return orderRepository.orderDb.size() - orderDeliveryPartnerRepository.orderDeliveryPairDb.size();
     }
 
     public int getOrdersLeftAfterGivenTimeByPartnerId(String time, String partnerId) {
@@ -162,22 +142,24 @@ public class OrderService {
     }
 
     public void deletePartnerById(String partnerId) {
-        DeliveryPartnerRepository.deletePartnerById(partnerId);
         orderDeliveryPartnerRepository.deletePartnerById(partnerId);
     }
 
     public String deleteOrderById(String orderId) {
-        List<String> assignedDeliveryPartners = orderDeliveryPartnerRepository.getAssignedDeliverPartnerIds();
 
-        if (assignedDeliveryPartners != null) {
-            for (String id : assignedDeliveryPartners) {
-                List<String> orderIds = orderDeliveryPartnerRepository.orderDeliveryPairDb.get(id);
+        if(orderRepository.orderDb.containsKey(orderId)) {
+            String partnerId = orderDeliveryPartnerRepository.orderDeliveryPairDb.get(orderId);
 
-                if (orderIds != null) {
-                    orderIds.remove(orderId);
-                    break;
-                }
-            }
+            List<String> orders = orderDeliveryPartnerRepository.getAllDeliveryPartnerOrders(partnerId);
+            orders.remove(orderId);
+            orderDeliveryPartnerRepository.deliveryPartnerOrdersDb.put(partnerId, orders);
+
+            DeliveryPartner deliveryPartner = deliveryPartnerRepository.deliveryPartnerDb.get(partnerId);
+            deliveryPartner.setNumberOfOrders(orders.size());
+            deliveryPartnerRepository.deliveryPartnerDb.put(partnerId, deliveryPartner);
+
+            orderRepository.orderDb.remove(orderId);
+            List<String> assignedDeliveryPartners = orderDeliveryPartnerRepository.getAssignedDeliverPartnerIds();
 
             return "removed";
         }

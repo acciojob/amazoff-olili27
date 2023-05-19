@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 @Repository
 public class OrderRepository {
 
-    public OrderRepository() {}
-
     HashMap<String, Order>  orderDb = new HashMap<>();
 
      public void addOrder(Order order) {

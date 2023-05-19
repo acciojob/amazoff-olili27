@@ -11,21 +11,28 @@ import java.util.stream.Collectors;
 @Repository
 public class OrderDeliveryPartnerRepository {
 
-//    @Autowired
-    OrderRepository orderRepository = new OrderRepository();
+    @Autowired
+    OrderRepository orderRepository;
 
-    HashMap<String, List<String>> orderDeliveryPairDb = new HashMap<>();
+    @Autowired
+    DeliveryPartnerRepository deliveryPartnerRepository;
+
+    HashMap<String, String> orderDeliveryPairDb = new HashMap<>();
+
+    HashMap<String, List<String>> deliveryPartnerOrdersDb = new HashMap<>();
 
     public String addPair(String orderId, String partnerId) {
-        if (orderRepository.orderDb.containsKey(orderId) && DeliveryPartnerRepository.deliveryPartnerDb.containsKey(partnerId)) {
-            List<String> ordersToHandle = orderDeliveryPairDb.getOrDefault(partnerId, new ArrayList<>());
+        if (orderRepository.orderDb.containsKey(orderId) && deliveryPartnerRepository.deliveryPartnerDb.containsKey(partnerId)) {
 
-            DeliveryPartner deliveryPartner = DeliveryPartnerRepository.deliveryPartnerDb.get(partnerId);
-            deliveryPartner.setNumberOfOrders(ordersToHandle.size() + 1);
+            orderDeliveryPairDb.put(orderId, partnerId);
 
-            ordersToHandle.add(orderId);
+            List<String> ordersToBeHandled = deliveryPartnerOrdersDb.getOrDefault(partnerId, new ArrayList<>());
+            ordersToBeHandled.add(orderId);
+            deliveryPartnerOrdersDb.put(partnerId, ordersToBeHandled);
 
-            orderDeliveryPairDb.put(partnerId, ordersToHandle);
+            DeliveryPartner deliveryPartner = deliveryPartnerRepository.deliveryPartnerDb.get(partnerId);
+            deliveryPartner.setNumberOfOrders(ordersToBeHandled.size());
+            deliveryPartnerRepository.deliveryPartnerDb.put(partnerId, deliveryPartner);
 
             return "Paired";
         }
@@ -34,9 +41,9 @@ public class OrderDeliveryPartnerRepository {
     }
 
     public List<String> getAllDeliveryPartnerOrders(String partnerId) {
-        if (orderDeliveryPairDb.isEmpty()) return null;
+        if (deliveryPartnerOrdersDb.isEmpty()) return null;
 
-        return orderDeliveryPairDb.get(partnerId).stream().collect(Collectors.toList());
+        return deliveryPartnerOrdersDb.get(partnerId).stream().collect(Collectors.toList());
     }
 
     public List<String> getAssignedDeliverPartnerIds() {
@@ -46,9 +53,17 @@ public class OrderDeliveryPartnerRepository {
     }
 
     public void deletePartnerById(String partnerId) {
-        if (orderDeliveryPairDb.isEmpty() || !orderDeliveryPairDb.containsKey(partnerId)) {
+        if (deliveryPartnerOrdersDb.containsKey(partnerId)) {
+            List<String> orders = getAllDeliveryPartnerOrders(partnerId);
+
+            for (String order: orders) {
+                orderDeliveryPairDb.remove(order);
+            }
+
+            deliveryPartnerOrdersDb.remove(partnerId);
+
             return;
         }
-        orderDeliveryPairDb.remove(partnerId);
+        deliveryPartnerRepository.deliveryPartnerDb.remove(partnerId);
     }
 }

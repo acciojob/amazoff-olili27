@@ -8,22 +8,21 @@ import java.util.stream.Collectors;
 
 @Repository
 public class DeliveryPartnerRepository {
-    static HashMap<String, DeliveryPartner> deliveryPartnerDb = new HashMap<>();
+    HashMap<String, DeliveryPartner> deliveryPartnerDb = new HashMap<>();
 
-     public static void addPartner(String partnerId) {
-        DeliveryPartner deliveryPartner = new DeliveryPartner();
-        deliveryPartner.setId(partnerId);
+     public void addPartner(String partnerId) {
+        DeliveryPartner deliveryPartner = new DeliveryPartner(partnerId);
 
         deliveryPartnerDb.put(partnerId, deliveryPartner);
     }
 
-     public static List<DeliveryPartner> getAllDeliveryPartners() {
+     public List<DeliveryPartner> getAllDeliveryPartners() {
         if (deliveryPartnerDb.isEmpty()) return null;
 
         return deliveryPartnerDb.values().stream().collect(Collectors.toList());
     }
 
-     public static void deletePartnerById(String partnerId) {
+     public void deletePartnerById(String partnerId) {
         if (deliveryPartnerDb.isEmpty() || !deliveryPartnerDb.containsKey(partnerId)) {
             return;
         }
